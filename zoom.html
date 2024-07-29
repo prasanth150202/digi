@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap');
+
+    ::-webkit-scrollbar {
+    display: none;
+}
+    body, html {
+      width: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      -ms-overflow-style: none; 
+    }
+
+    #transitionArea1 {
+      height: 200vh;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .container1 {
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      
+    }
+
+    .background1 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: url('https://png.pngtree.com/thumb_back/fw800/background/20231016/pngtree-stunning-aerial-view-abundance-of-mangrove-forest-in-a-lush-rainforest-image_13611906.png') no-repeat center center;
+      background-size: cover;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .background2 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3') no-repeat center center;
+      background-size: cover;
+      overflow: hidden;
+      z-index: 2;
+      visibility: hidden;
+    }
+
+    h1 {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      font-stretch: condensed;
+      font-size: 20vw;
+      text-transform: uppercase;
+      color: transparent;
+      transform-origin: center;
+    }
+
+    .background-text1 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3') no-repeat center center;
+      background-size: cover;
+      -webkit-background-clip: text;
+      background-clip: text;
+      z-index: 3;
+      display: flex;
+      overflow: hidden;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <section id="transitionArea1">
+    <div class="container1" id="container1">
+      <div class="background1" id="background1-1"></div>
+      <div class="background2" id="background1-2"></div>
+      <div class="background-text1" id="backgroundText1">
+        <h1 id="txtAdventure1">ADVENTURE</h1>
+      </div>
+    </div>
+  </section>
+  <!--<section style="width: 100%; height: 500px;"></section>-->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const container = document.getElementById('container1');
+      const transitionArea = document.getElementById('transitionArea1');
+      const background1 = document.getElementById('background1-1');
+      const background2 = document.getElementById('background1-2');
+      const backgroundText = document.getElementById('backgroundText1');
+      const txtAdventure = document.getElementById('txtAdventure1');
+
+      if (!container || !transitionArea || !background1 || !background2 || !backgroundText || !txtAdventure) {
+        console.error('Ein oder mehrere Elemente wurden nicht gefunden. Überprüfen Sie die IDs in Ihrem HTML.');
+        return;
+      }
+
+      function onScroll() {
+        const containerRect = container.getBoundingClientRect();
+        const transitionAreaRect = transitionArea.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+
+        const scrollProgress = Math.min(Math.max((window.scrollY - transitionArea.offsetTop) / (transitionArea.offsetHeight - viewportHeight), 0), 1);
+
+        if (transitionAreaRect.top <= 0 && transitionAreaRect.bottom >= viewportHeight) {
+          container.style.position = 'fixed';
+          container.style.top = '0';
+        } else if (transitionAreaRect.bottom < viewportHeight) {
+          container.style.position = 'absolute';
+          container.style.top = (transitionArea.offsetHeight - container.offsetHeight) + 'px';
+        } else if (transitionAreaRect.top > 0) {
+          container.style.position = 'relative';
+          container.style.top = '0';
+        }
+
+        if (scrollProgress >= 0.1 && scrollProgress <= 0.9) {
+          const sizeProgress = (scrollProgress - 0.1) / 0.8;
+          const fontSizeValue = 20 + sizeProgress * 1000; // 20vw to 2000vw
+          txtAdventure.style.fontSize = `${fontSizeValue}vw`;
+          txtAdventure.style.visibility = 'visible';
+          background2.style.visibility = 'hidden';
+        } else if (scrollProgress < 0.1) {
+          txtAdventure.style.fontSize = '20vw';
+          txtAdventure.style.visibility = 'visible';
+          background2.style.visibility = 'hidden';
+        } else if (scrollProgress > 0.9) {
+          txtAdventure.style.fontSize = '1000vw';
+          txtAdventure.style.visibility = 'hidden';
+          background2.style.visibility = 'visible';
+        }
+      }
+
+      window.addEventListener('scroll', onScroll);
+      onScroll();
+    });
+  </script>
+</body>
+</html>

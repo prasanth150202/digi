@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Slider</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            background: black;
+        }
+
+        .image-slider-bg {
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            filter: blur(10px);
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            transition: 0.3s linear;
+        }
+
+        .image-slider-container {
+            position: relative;
+            top: 25%;
+            display: grid;
+            width: 95%;
+            height: 50%;
+            grid-template-columns: 90%;
+            justify-content: center;
+            overflow-y: scroll;
+            row-gap: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #7c7c7c rgba(0, 0, 0, 0.2);
+        }
+
+        .image-slider-container::-webkit-scrollbar {
+            width: 5px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .image-slider-container::-webkit-scrollbar-thumb {
+            width: 5px;
+            background: #7c7c7c;
+            border-radius: 10px;
+        }
+
+        .image {
+            background-position: center;
+            background-size: cover;
+            height: 20rem;
+            view-timeline-name: --frame-timeline;
+            animation: emphasize both;
+            animation-timeline: --frame-timeline;
+            animation-range: contain 0% contain 50% contain 100%;
+        }
+
+        .details-bg {
+            width: 100%;
+            height: 100%;
+            transition: 0.3s linear;
+            display: flex;
+            align-items: end;
+        }
+
+        .details-bg:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            margin: 0 0 20px 30px;
+        }
+
+        .title, .lead {
+            margin: 10px 0;
+            transition: 0.5s ease-out;
+            color: white;
+            transform: translateX(-100%);
+            font-family: "Space Mono", monospace;
+        }
+
+        .details-bg:hover .title,
+        .details-bg:hover .lead {
+            transform: translateX(0);
+        }
+
+        .lead {
+            transition-delay: 0.2s;
+        }
+
+        @keyframes emphasize {
+            0% {
+                transform: translateY(20px) scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(20px) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .image-slider-container {
+                width: 100%;
+                top: 20%;
+                height: 60%;
+            }
+            
+            .image {
+                height: 15rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .image, .details-bg, .title, .lead {
+                animation: none;
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+  <div class =" container"></div>
+    <div class="image-slider-bg"></div>
+    <div class="image-slider-container"></div>
+
+    <script>
+        let imageURLs = [
+            {
+                background: 'https://static1.colliderimages.com/wordpress/wp-content/uploads/2022/01/The-Hunger-Games-Movies-in-Order.jpg',
+                book: 'THE HUNGER GAMES',
+                lead: 'KATNISS EVERDEEN'
+            },
+            {
+                background: 'https://cdn.europosters.eu/image/hp/80594.jpg',
+                book: 'HARRY POTTER',
+                lead: 'HARRY POTTER'
+            },
+            {
+                background: 'https://m.media-amazon.com/images/S/pv-target-images/06b3a88bd674980e8dfab3347c9d991379ba476b024a3a4a64556ebff88c8191.jpg',
+                book: 'THE LORD OF THE RINGS',
+                lead: 'FRODO'
+            },
+            {
+                background: 'https://staticg.sportskeeda.com/editor/2022/09/12868-16637352225600-1920.jpg',
+                book: 'THE HOBBIT',
+                lead: 'BILBO BAGGINS'
+            },
+            {
+                background: 'https://i0.wp.com/subjectifymedia.com/wp-content/uploads/2022/11/percy-jackson-and-the-olympians-book-poster.jpg?fit=1300%2C650&ssl=1',
+                book: 'PERCY JACKSON',
+                lead: 'PERCY JACKSON'
+            }
+        ];
+
+        let imageSliderContainer = document.querySelector('.image-slider-container');
+
+        imageURLs.forEach((image) => {
+            let divElement = document.createElement('div');
+            divElement.classList.add("image");
+            divElement.style.backgroundImage = `url(${image.background})`;
+
+            let childDivElement = document.createElement('div');
+            childDivElement.classList.add("details-bg");
+
+            let detailsDivElement = document.createElement('div');
+            detailsDivElement.classList.add('details');
+
+            let titleElement = document.createElement('p');
+            titleElement.classList.add('title');
+            titleElement.innerText = `TITLE: ${image.book}`;
+            detailsDivElement.appendChild(titleElement);
+
+            let leadElement = document.createElement('p');
+            leadElement.classList.add('lead');
+            leadElement.innerText = `LEAD: ${image.lead}`;
+            detailsDivElement.appendChild(leadElement);
+
+            childDivElement.appendChild(detailsDivElement);
+            divElement.appendChild(childDivElement);
+            imageSliderContainer.appendChild(divElement);
+        });
+
+        const selectBackground = () => {
+            let imageSliderBg = document.querySelector('.image-slider-bg');
+            let images = imageSliderContainer.querySelectorAll('.image');
+
+            images.forEach((image, index) => {
+                let computedStyle = window.getComputedStyle(image);
+                let opacity = computedStyle.getPropertyValue('opacity');
+
+                if (+opacity > 0.75) {
+                    imageSliderBg.style.backgroundImage = `url(${imageURLs[index].background})`;
+                    images[index].scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        };
+
+        const initialBackground = () => {
+            let imageSliderBg = document.querySelector('.image-slider-bg');
+            imageSliderBg.style.backgroundImage = `url(${imageURLs[0].background})`;
+        };
+
+        initialBackground();
+        imageSliderContainer.addEventListener('scroll', selectBackground);
+    </script>
+</body>
+</html>
